@@ -8,7 +8,9 @@
   The other part is a managed network with two Open vSwitch switches (located in the centre). They are fully synchronized with the controller, unlike the rest of the devices (such as end stations or routers) that setup is mainly done directly. On the left the website has a simple simulated computer (VPCS) and a server containing two NIC's. Both devices are separated from the rest by creating a separate bridge on the switch. They are intended to present an example of the link aggregation  from using the LACP protocol. On the right is another OVS switch that unlike the "colleagues" in the center, it is not connected to controller. Its task is to present another OVS functionality that it's  routing. In the very center, two VLANs were created, in which the composition includes Cisco router, VPCS and Ubuntu Docker Guest (light server).
   Both planes must be separated from each other, therefore on both switches there is no routing configured. This is because, interfaces eth0 of the switches are management-only interfaces. If we however, they ignored this fact, there would be collision of TCP frames with OpenFlow frames, which paralyzes remote management of the SDN network. The switches therefore work in the second layer. In a situation where any of the devices needed internet connection, user can use R5 router which supports NAT translations. Consequently, the guest systems do not have to be on the same subnets as the NAT cloud, it can use a defined pool of public addresses.
 
+
 INSTALATION AND CONFIGURATION
+
 
 First, we need to install a virtualization environment (VirtualBox or VMware Workstation Pro) and GNS3 with GNS3 VM. In my case, all machines were run on VirtualBox (ODL/OFM server, LinuxLite, Debian LACP) with the exception of GNS3 VM, which was run on VMware. The rest of devices such as Cisco routers (7200), switches (OVS, IOU), VPCSs and Dockers will be hosted by GNS3 VM. To download the tools mentioned above, visit https://gns3.com/marketplace/appliances and import them into your project.
 Then you need to address all devices and connect them with each other as shown in the picture above. To do this, use the console. For example:
@@ -65,3 +67,20 @@ Remaining in the central switches, VLANs with a trunk were defined, which will a
 The last configuration is to prepare the third OVS switch, not connected to the controller, to work in the third layer. To do this, use the edit tab and define the addresses of connected interfaces there. The next step is to turn on the switch and complete the routing table. For this purpose, a short script was written:
 
 ![Routing skrypt OVSL3](https://user-images.githubusercontent.com/109351514/179263724-92b5a583-c410-404c-b73f-7c0d4128746f.JPG)
+
+
+TESTING
+
+
+In the figure below. we are in the server console (Docker1), which is in the VLAN10 network. We can see that the connection was established only with the networks: 192.168.50.0 and 192.168.60.0, which confirms the correct operation of not only logical segments, but also the trunk link. No communication could be established with the other networks. Thanks to this solution, we can confidently isolate selected networks from each other and more:
+
+![VLAN ping](https://user-images.githubusercontent.com/109351514/179264756-6a0eaba8-0656-4b85-b524-88e1f5179b26.JPG)
+
+Now let's test the configured link aggregation using LACP. According to our requirements, we should obtain two functionalities: transferring traffic to the available link in the event of breaking the current connection and increasing the transmission speed by using all available connections. To verify the correctness of operation, the Wireshark program was used, which allows intercepting the traffic on a given link:
+
+![LACP WIRESHARKprzerzucenie ruchu](https://user-images.githubusercontent.com/109351514/179265156-cf517df5-6629-4836-9b4b-bc689ed20665.JPG)
+
+After a short while, the network traffic is transferred to the available link. When we re-plug the virtual cable between the eth4 (switch) and e1 (DebianLACP) interface, we will notice that ICMP queries and responses are grouping together. Only the answers are sent on one link, and only the queries on the other. The described situation is presented in the figure below:
+
+![LACP wireshark dwa kanały](https://user-images.githubusercontent.com/109351514/179266772-1dc04249-3926-4844-b880-0a196a0f3754.JPG)
+
