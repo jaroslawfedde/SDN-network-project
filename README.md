@@ -8,6 +8,8 @@
   The other part is a managed network with two at the center Open vSwitch switches. They are fully synchronized with the controller, unlike the rest of the devices (such as end stations or routers) that setup is mainly done directly. On the left the website has a simple simulated computer (VPCS) and a server containing two NIC's. Both devices are separated from the rest by creating a separate bridge on the switch. They are intended to present an example of the link aggregation  from using the LACP protocol. On the right is another OVS switch that unlike the "colleagues" in the center, it is not connected to controller. Its task is to present another OVS functionality that it's  routing. In the very center, two VLANs were created, in which the composition includes Cisco router, VPCS and Ubuntu Docker Guest (light server).
   Both planes must be separated from each other, therefore on both switches there is no routing configured. This is because, interfaces eth0 of the switches are management-only interfaces. If we however, they ignored this fact, there would be collision of TCP frames with OpenFlow frames, which paralyzes remote management of the SDN network. The switches therefore work in the second layer. In a situation where any of the devices needed internet connection, user can use R5 router which supports NAT translations. Consequently, the guest systems do not have to be on the same subnets as the NAT cloud, it can use a defined pool of public addresses.
 
+INSTALATION AND CONFIGURATION
+
 First, we need to install a virtualization environment (VirtualBox or VMware Workstation Pro) and GNS3 with GNS3 VM. In my case, all machines were run on VirtualBox (ODL/OFM server, LinuxLite, Debian LACP) with the exception of GNS3 VM, which was run on VMware. The rest of devices such as Cisco routers (7200), switches (OVS, IOU), VPCSs and Dockers will be hosted by GNS3 VM. To download the tools mentioned above, visit https://gns3.com/marketplace/appliances and import them into your project.
 Then you need to address all devices and connect them with each other as shown in the picture above. To do this, use the console. For example:
 
@@ -50,6 +52,10 @@ Looking to the left side of our topology, we can see two machines, one of which 
 
 ![LACP interfaces](https://user-images.githubusercontent.com/109351514/179254896-f39b1c62-5988-42d7-84b4-acd540f7482b.JPG)
 
-We can see that when defining both cards we deal with the term manual, which is used when the network interface is not to have an IP address. Only now the bond has been addressed statically. Additionally, we can note the type of bond is marked with the number 4. This number represents the aggregation of dynamic links (LACP). It is important that the switch connected to the server also supports the 802.3ad standard.
+We can see that when defining both cards we deal with the term manual, which is used when the network interface is not to have an IP address. Only now the bond has been addressed statically. Additionally, we can note the type of bonding is marked with the number 4. This number represents the aggregation of dynamic links (LACP). It is important that the switch connected to the server also supports the 802.3ad standard.
 
 We also need to perform some operations on the switch
+
+![LACP OVS](https://user-images.githubusercontent.com/109351514/179256118-80185ede-89e4-46c9-aca8-cb0a0e826b41.JPG)
+
+First, we created a new lacp bridge, then removed three interfaces from the default bridge. Two of them took part in the creation of the bond. A simple simulated computer is connected to the sixth interface, which will allow us to test the bonding.
