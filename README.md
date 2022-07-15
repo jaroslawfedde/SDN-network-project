@@ -59,3 +59,9 @@ We also need to perform some operations on the switch
 ![LACP OVS](https://user-images.githubusercontent.com/109351514/179256118-80185ede-89e4-46c9-aca8-cb0a0e826b41.JPG)
 
 First, we created a new lacp bridge, then removed three interfaces from the default bridge. Two of them took part in the creation of the bond. A simple simulated computer is connected to the sixth interface, which will allow us to test the bonding.
+
+Remaining in the central switches, VLANs with a trunk were defined, which will allow the different VLANs to communicate. This link is used in a situation where we want to transport packets of several VLANs in one link. To split into several logical networks, the following command was used: ovs-vsctl set port [interface name] tag = [VLAN identifier]. This is how VLAN10 and VLAN20 were configured on both switches. The trunk link was implemented with the command: ovs-vsctl set port [interface name] trunks = [first VLAN ID, second VLAN ID].
+
+The last configuration is to prepare the third OVS switch, not connected to the controller, to work in the third layer. To do this, use the edit tab and define the addresses of connected interfaces there. The next step is to turn on the switch and complete the routing table. For this purpose, a short script was written:
+
+![Routing skrypt OVSL3](https://user-images.githubusercontent.com/109351514/179263724-92b5a583-c410-404c-b73f-7c0d4128746f.JPG)
