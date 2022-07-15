@@ -84,3 +84,8 @@ After a short while, the network traffic is transferred to the available link. W
 
 ![LACP wireshark dwa kanały](https://user-images.githubusercontent.com/109351514/179266772-1dc04249-3926-4844-b880-0a196a0f3754.JPG)
 
+The last described functionality will be remote management of switches using an application connected to the controller. Information on flows using the OpenFlow protocol will be sent on virtual links connected to management interfaces. With this feature, it is safe to say that the designed network is an SDN programmable network.
+The first step will be to start the server and install the tmux program, which will allow you to run the controller and the application at the same time. To split the screen horizontally, press: "Ctrl + Shift + B +":
+
+![ODL i OFM włączenie](https://user-images.githubusercontent.com/109351514/179269052-886f2384-2485-428a-8e7c-4242f969f0c0.JPG)
+
