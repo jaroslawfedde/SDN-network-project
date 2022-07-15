@@ -1,5 +1,6 @@
 # SDN-network-project
-  SDN network design made with GNS3. The essence of the project was to present the main functionalities of Open vSwitch (OpenFlow, LACP, L3, VLAN).  The materials contained in the repository take the form of screenshots and instructions. The created infrastructure is shown below:
+  SDN network design made with GNS3. The essence of the project was to present the main functionalities of Open vSwitch (OpenFlow, LACP, L3, VLAN).  The materials contained in the repository take the form of screenshots and instructions. Everything you need to recreate the project is included in this file, enjoy :)
+  The created infrastructure is shown below:
 
 ![topolgia zaprojektowanej sieci](https://user-images.githubusercontent.com/109351514/179216549-021ba692-cc81-47c0-9359-196ee290924c.JPG)
 
