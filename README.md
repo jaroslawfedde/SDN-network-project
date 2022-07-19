@@ -89,3 +89,15 @@ The first step will be to start the server and install the tmux program, which w
 
 ![ODL i OFM włączenie](https://user-images.githubusercontent.com/109351514/179269052-886f2384-2485-428a-8e7c-4242f969f0c0.JPG)
 
+After starting the server, log in to the Linux Lite machine and use the browser to connect to OpenDaylight and OpenFlow Manager. The flows will be controlled from the application level. To add or edit a flow table, go to the Flow Management / Flows / Edit tab. In order to test the functioning of the application, two operations were performed. The first is to dump all inbound traffic on eth1 (OVS3):
+
+![OFM drop](https://user-images.githubusercontent.com/109351514/179746653-b6cd6467-f52e-4547-975c-120d21d9f5cd.JPG)
+
+The "show preview" button displays the code which is sent to the switch, while "send all" sends all designed commands/instructions to the switch. In order to verify that the information has reached the switch, enter the following command in the console: ovs-ofctl dump-flows br0 | grep 1000. We search for our information based on the "priority" parameter set. Machines that are plugged into the eth1 port, aren't able to connect to anything that is behind the switch.
+The second operation is to redirect traffic from eth3 to eth7 (all VLANs were disabled during the test). The design of this instruction is similar to the previous one, with one difference . Instead of the "drop" option, the "output port" option was selected and port 7 was selected. To verify the correctness of the created command,we used the Wireshark program. Results are presented below:
+
+![OFM przerzucenie z portu na port](https://user-images.githubusercontent.com/109351514/179748350-fbdac640-ed76-472e-a09c-42fb80ed1c7d.jpg)
+
+We can see that packets with the destination address 10.0.0.2 are coming to port 7, while the computer with the address 10.0.0.20 is physically connected.
+
+Due to the multitude of processes that could be performed using the OpenFlow Manager application, it was decided to present a few representative examples. The same applies to introducing the rest of the services offered by Open vSwitch.
